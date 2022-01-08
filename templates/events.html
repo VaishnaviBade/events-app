@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content  %}
+<br>
+<h1 class="display-4 text-center">Explore Events</h1>
+<hr>
+<div class="row">
+   {% csrf_token %}
+   {% for event in all_events %}
+   <div class="card col col-4 mt-2" style="width: 25rem;">
+      <div class="card-header">
+         <b>By</b>
+         <span class="text-primary">
+         {{event.created_by.get_full_name}}
+         </span>
+         <span style="float:right;">
+         <span id="likecounter{{event.id}}">
+         {{event.get_number_like}}   
+         </span> Likes
+         <span style="cursor: pointer;" id="eventlikeframe{{event.id}}"  onclick="function fuc(){like_unlike_the_event({{event.id}})};fuc()">
+            {% if  request.user in event.like_people.all %}
+            <i class="fas fa-heart fa-2x text-danger"></i>
+            {%else %}
+            <i class="fas fa-heart fa-2x"></i>
+            {% endif %}
+         
+         </span>
+         </span>
+      </div>
+      <img class="card-img-top" src="{{event.image.url}}" style="height: 300px;">
+      <div class="card-body">
+         <h5 class="card-title">{{event.name}}  
+         </h5>
+         <p class="card-text">
+            {{event.description}}
+         <hr>
+         <b >
+         Event Time :  
+         </b>
+         {{event.time}}
+         <b >
+         <br>
+         Event Location :  
+         </b>
+         {{event.location}}
+         </p>
+         <p class="card-text">
+         </p>
+      </div>
+   </div>
+   {% endfor %}
+</div>
+<script type="text/javascript">
+   function like_unlike_the_event(event_id) {
+       var postLikeCounter = document.getElementById("likecounter" + event_id);
+       var eventLikeFrame = document.getElementById("eventlikeframe" + event_id);
+       let csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+       fetch(`/toggle-like-unlink-event/${event_id}/`,
+       {
+         method: "POST",
+         csrfmiddlewaretoken: csrftoken,
+          headers: {
+           "X-CSRFToken": csrftoken
+       }
+       
+       }).then((response) => 
+       { 
+         return response.json();
+       })
+       .then(data => {
+       console.log("dtatofjjb ",data);
+        if (data.action === "like") {
+            eventLikeFrame.innerHTML=`<i class="fas fa-heart fa-2x text-danger"></i>`
+            postLikeCounter.innerHTML=data.num_likes
+} else if (data.action==="unlike"){
+    eventLikeFrame.innerHTML=`<i class="fas fa-heart fa-2x"></i>`
+    postLikeCounter.innerHTML=data.num_likes
+}
+       });
+   
+   }
+   
+   
+</script>
+{% endblock content  %}

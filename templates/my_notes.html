@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content  %}
+<h1 class="display-4 text-center">My Notes</h1>
+<hr>
+<div class="container">
+	<div class="row">
+	   {% for note in notes %}
+		   <div class="card col-6 mb-2" >
+		   	<div>
+		   		<a href="{% url "my_note" note.pk%}">
+		   			<button type="button" class="btn btn-warning mt-2">click here to view</button>
+		   		</a>
+		   	</div>
+		      <div class="card-body">
+		         <blockquote class="blockquote mb-0">
+		            <p>{{note.text}}</p>
+		            <footer class="blockquote-footer">Created At
+		               <cite title="Source Title">{{note.created}}</cite>
+		            </footer>
+		         </blockquote>
+		      </div>
+		   </div>
+	   {% endfor %}
+	</div>
+</div>
+{% endblock content  %}

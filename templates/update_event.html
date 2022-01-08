@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content  %}
+<br>
+<h1 class="display-4">Update Event</h1>
+<hr>
+<form method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	{{event_form|crispy}}
+	<hr>
+	<input type="submit" name="Create Event" class="btn btn-primary btn-block btn-lg">
+ </form>
+<script type="text/javascript">
+	document.getElementById('id_time').setAttribute('value','{{event_obj.time|date:"Y-m-d\TH:i" }}')
+</script>
+{% endblock content  %}
